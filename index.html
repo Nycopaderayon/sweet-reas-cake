@@ -61,11 +61,20 @@
           <div class="admin-heading"><div><p class="eyebrow"><span></span> Private workspace</p><h2>Manage the <em>menu</em></h2></div><button class="primary-button" id="open-add-admin" type="button">+ Add a cake</button></div>
           <div class="admin-bar"><p>Add, edit, or remove products from your menu. Changes are saved in this browser.</p><span class="admin-badge">ADMIN MODE</span></div>
           <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Cake</th><th>Category</th><th>Price</th><th><span class="visually-hidden">Actions</span></th></tr></thead><tbody id="admin-list"></tbody></table></div>
+          
+          <div class="admin-heading admin-subheading" style="margin-top: 60px;"><div><h2>Manage <em>testimonials</em></h2></div><button class="primary-button" id="open-add-testimonial" type="button">+ Add testimonial</button></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Reviewer</th><th>Content</th><th><span class="visually-hidden">Actions</span></th></tr></thead><tbody id="testimonial-admin-list"></tbody></table></div>
         </section>
 
         <section class="story-section" id="story">
           <div class="story-intro"><p class="story-script">Sweet Rea's Cake</p><p class="story-kicker">OUR SWEET STORY</p><button class="story-edit-button" id="open-story-editor" type="button">Edit story</button></div>
           <div class="story-timeline" id="story-timeline"></div>
+        </section>
+
+        <section class="testimonials-section" id="testimonials">
+          <div class="marquee">
+            <div class="marquee-track" id="testimonial-track"></div>
+          </div>
         </section>
 
         <section class="contact-section" id="contact">
@@ -110,6 +119,15 @@
         <div class="dialog-header"><div><p class="eyebrow"><span></span> Please confirm</p><h2 id="confirm-title">Are you sure?</h2></div><button class="close-button" id="close-confirm-dialog" type="button" aria-label="Close dialog">×</button></div>
         <p class="dialog-intro" id="confirm-message"></p>
         <div class="dialog-actions"><button class="cancel-button" id="cancel-confirm-dialog" type="button">Cancel</button><button class="primary-button danger-button" id="confirm-submit" type="submit">Delete <span>×</span></button></div>
+      </form>
+    </dialog>
+    <dialog id="testimonial-dialog" class="cake-dialog">
+      <form id="testimonial-form" method="dialog">
+        <div class="dialog-header"><div><p class="eyebrow"><span></span> Testimonial editor</p><h2 id="testimonial-dialog-title">Add a <em>testimonial</em></h2></div><button class="close-button" id="close-testimonial-dialog" type="button" aria-label="Close dialog">×</button></div>
+        <p class="dialog-intro">What are people saying about your cakes?</p>
+        <label>Author name<input name="author_name" required maxlength="40" placeholder="e.g. Sarah M." /></label>
+        <label>Review content<textarea name="content" required maxlength="200" rows="3" placeholder="The most beautiful and delicious cake..."></textarea></label>
+        <div class="dialog-actions"><button class="cancel-button" id="cancel-testimonial-dialog" type="button">Cancel</button><button class="primary-button" id="submit-testimonial" type="submit">Save testimonial <span>✦</span></button></div>
       </form>
     </dialog>
     <dialog id="story-dialog" class="cake-dialog story-dialog">
