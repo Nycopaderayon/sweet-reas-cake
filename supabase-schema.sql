@@ -28,6 +28,7 @@ create table if not exists testimonials (
   id uuid primary key default gen_random_uuid(),
   author_name text not null,
   content text not null,
+  avatar_url text,
   created_at timestamptz default now()
 );
 

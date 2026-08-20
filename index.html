@@ -130,6 +130,7 @@
         <div class="dialog-header"><div><p class="eyebrow"><span></span> Testimonial editor</p><h2 id="testimonial-dialog-title">Add a <em>testimonial</em></h2></div><button class="close-button" id="close-testimonial-dialog" type="button" aria-label="Close dialog">×</button></div>
         <p class="dialog-intro">What are people saying about your cakes?</p>
         <label>Author name<input name="author_name" required maxlength="40" placeholder="e.g. Sarah M." /></label>
+        <div class="field-label">Profile picture <span class="input-hint">optional</span><span class="file-picker"><input id="testimonial-photo-upload" name="image" type="file" accept="image/*" /><label class="file-button" for="testimonial-photo-upload">Choose file</label><span class="file-name" id="testimonial-image-file-name">No file chosen</span></span></div>
         <label>Review content<textarea name="content" required maxlength="200" rows="3" placeholder="The most beautiful and delicious cake..."></textarea></label>
         <div class="dialog-actions"><button class="cancel-button" id="cancel-testimonial-dialog" type="button">Cancel</button><button class="primary-button" id="submit-testimonial" type="submit">Save testimonial <span>✦</span></button></div>
       </form>
