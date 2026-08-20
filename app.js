@@ -14,8 +14,14 @@ const defaultStory = [
   { icon: "♡", time_label: "Today", title: "Made with intention", description: "Small-batch bakes, carefully finished and made to feel like they belong to your people.", sort_order: 2 },
   { icon: "✦", time_label: "And then...", title: "Happily ever after", description: "There is always room for one more slice.", sort_order: 3 }
 ];
-const isAdminView = new URLSearchParams(window.location.search).get("admin") === "1";
-if (isAdminView) document.body.classList.add("admin-view");
+supabase.auth.getSession().then(({ data: { session } }) => {
+  if (session) {
+    document.body.classList.add("admin-view");
+    if (window.top !== window.self) {
+      setTimeout(() => document.querySelector("#admin").scrollIntoView(), 100);
+    }
+  }
+});
 const grid = document.querySelector("#cake-grid");
 const emptyState = document.querySelector("#empty-state");
 const searchInput = document.querySelector("#search-input");
