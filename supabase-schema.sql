@@ -28,6 +28,13 @@ alter table cakes enable row level security;
 alter table categories enable row level security;
 alter table milestones enable row level security;
 
+drop policy if exists "Public can view cakes" on cakes;
+drop policy if exists "Admins can manage cakes" on cakes;
+drop policy if exists "Public can view categories" on categories;
+drop policy if exists "Admins can manage categories" on categories;
+drop policy if exists "Public can view milestones" on milestones;
+drop policy if exists "Admins can manage milestones" on milestones;
+
 create policy "Public can view cakes" on cakes for select to anon, authenticated using (true);
 create policy "Admins can manage cakes" on cakes for all to authenticated using (true) with check (true);
 create policy "Public can view categories" on categories for select to anon, authenticated using (true);
@@ -54,6 +61,11 @@ select * from (values
   ('✦', 'And then...', 'Happily ever after', 'There is always room for one more slice.', 3)
 ) as defaults(icon, time_label, title, description, sort_order)
 where not exists (select 1 from milestones);
+
+drop policy if exists "Public can view cake images" on storage.objects;
+drop policy if exists "Admins can upload cake images" on storage.objects;
+drop policy if exists "Admins can update cake images" on storage.objects;
+drop policy if exists "Admins can delete cake images" on storage.objects;
 
 create policy "Public can view cake images" on storage.objects for select to anon, authenticated using (bucket_id = 'cake-images');
 create policy "Admins can upload cake images" on storage.objects for insert to authenticated with check (bucket_id = 'cake-images');
