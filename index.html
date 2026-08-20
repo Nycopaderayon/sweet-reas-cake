@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A bright, simple cake price list you can manage from the browser." />
+    <title>Sweet Treat's Reas Cake | Cake price list</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,700;9..144,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Sweet Treat's Reas Cake home"><img class="logo-image" src="Logo.png" alt="Sweet Treat's Reas Cake" /><span class="brand-name">Sweet Rea's Cake</span></a>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="#cakes">The menu</a>
+          <a href="#story">Our story</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </header>
+
+      <main id="top">
+        <section class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow"><span></span> Freshly listed today</p>
+            <h1>A little joy,<br /><em>by the slice.</em></h1>
+            <p class="hero-text">Small-batch cakes for big moments, quiet afternoons, and every sweet thing in between.</p>
+            <a class="primary-button" href="#cakes">Browse the menu <span>↓</span></a>
+          </div>
+          <div class="hero-art" aria-label="A decorated strawberry cake" role="img">
+            <div class="stamp">made<br /><strong>with</strong><br />wonder</div>
+            <div class="cake-illustration">
+              <div class="berry berry-one">●</div><div class="berry berry-two">●</div><div class="berry berry-three">●</div>
+              <div class="cake-top"></div><div class="cake-middle"></div><div class="cake-bottom"></div>
+              <div class="cake-plate"></div>
+            </div>
+            <div class="sprinkle sprinkle-a">✳</div><div class="sprinkle sprinkle-b">✦</div><div class="sprinkle sprinkle-c">·</div>
+          </div>
+        </section>
+
+        <section class="menu-section" id="cakes">
+          <div class="section-heading">
+            <div><p class="eyebrow"><span></span> Pick your pleasure</p><h2>Today’s <em>menu</em></h2></div>
+            <p class="menu-note">Every cake is baked to order<br />and wrapped with care.</p>
+          </div>
+          <div class="toolbar">
+            <div class="search-wrap"><span>⌕</span><input id="search-input" type="search" placeholder="Search the menu..." aria-label="Search cakes" /></div>
+            <div class="filter-group" role="group" aria-label="Filter cakes by category">
+              <button class="filter active" data-filter="All" type="button">All</button>
+              <button class="add-category-filter" id="add-category-filter" type="button">+ Add category</button>
+            </div>
+          </div>
+          <div class="cake-grid" id="cake-grid"></div>
+          <div class="empty-state" id="empty-state" hidden><span>✿</span><h3>No cakes found</h3><p>Try another search, or add something delicious to the menu.</p></div>
+        </section>
+
+        <section class="admin-section" id="admin">
+          <div class="admin-heading"><div><p class="eyebrow"><span></span> Private workspace</p><h2>Manage the <em>menu</em></h2></div><button class="primary-button" id="open-add-admin" type="button">+ Add a cake</button></div>
+          <div class="admin-bar"><p>Add, edit, or remove products from your menu. Changes are saved in this browser.</p><span class="admin-badge">ADMIN MODE</span></div>
+          <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Cake</th><th>Category</th><th>Price</th><th><span class="visually-hidden">Actions</span></th></tr></thead><tbody id="admin-list"></tbody></table></div>
+        </section>
+
+        <section class="story-section" id="story">
+          <div class="story-intro"><p class="story-script">Sweet Rea's Cake</p><p class="story-kicker">OUR SWEET STORY</p><button class="story-edit-button" id="open-story-editor" type="button">Edit story</button></div>
+          <div class="story-timeline" id="story-timeline"></div>
+        </section>
+
+        <section class="contact-section" id="contact">
+          <div><p class="eyebrow"><span></span> Say hello</p><h2>Find us on<br /><em>Facebook.</em></h2></div>
+          <a class="facebook-link" href="https://www.facebook.com/realan.nebreja" target="_blank" rel="noopener noreferrer"><span class="facebook-icon">f</span><span>Sweet Rea's Cake on Facebook</span><span class="facebook-arrow">↗</span></a>
+        </section>
+      </main>
+
+      <footer class="site-footer">
+        <div class="footer-main">
+          <div class="footer-brand-column">
+            <h2><a class="footer-brand-name" href="#top">Sweet Rea's Cake</a></h2>
+            <nav class="footer-links" aria-label="Footer navigation"><a href="#cakes">The menu</a><a href="#story">Our story</a><a href="#contact">Contact</a></nav>
+          </div>
+          <div class="footer-about"><h2>About</h2><p>Small-batch cakes made for big moments in Davao City. We bake with bright flavors, generous frosting, and the kind of care that makes every celebration feel personal.</p><a class="footer-facebook" href="https://www.facebook.com/realan.nebreja" target="_blank" rel="noopener noreferrer"><span>f</span> Facebook</a></div>
+        </div>
+        <div class="footer-bottom"><address>Km.24 Bunaply, Bunawan, Davao City 8000, Philippines</address><p>© 2026 Nyco Paderayon. All Rights Reserved.</p></div>
+      </footer>
+    </div>
+
+    <dialog id="cake-dialog" class="cake-dialog">
+      <form id="cake-form" method="dialog">
+        <div class="dialog-header"><div><p class="eyebrow"><span></span> Menu editor</p><h2 id="dialog-title">Add a <em>new cake</em></h2></div><button class="close-button" id="close-dialog" type="button" aria-label="Close dialog">×</button></div>
+        <p class="dialog-intro">Changes are saved in this browser automatically.</p>
+        <label>Cake name<input name="name" required maxlength="40" placeholder="e.g. Lemon cloud cake" /></label>
+        <div class="form-row"><label>Price <span class="input-hint">in Philippine pesos (₱)</span><input name="price" required type="number" min="0" step="0.01" placeholder="38" /></label><label>Category <span class="input-hint">choose one</span><select id="category-select" name="category" required></select></label></div>
+        <div class="field-label">Photo <span class="input-hint">optional · JPG, PNG, or WebP</span><span class="file-picker"><input id="photo-upload" name="image" type="file" accept="image/*" /><label class="file-button" for="photo-upload">Choose file</label><span class="file-name" id="image-file-name">No file chosen</span></span></div>
+        <label>Short description <span class="input-hint">optional</span><textarea name="description" maxlength="110" rows="3" placeholder="What makes this cake special?"></textarea></label>
+        <div class="dialog-actions"><button class="cancel-button" id="cancel-dialog" type="button">Cancel</button><button class="primary-button" id="submit-cake" type="submit">Add to menu <span>✦</span></button></div>
+      </form>
+    </dialog>
+    <dialog id="category-dialog" class="cake-dialog">
+      <form id="category-form" method="dialog">
+        <div class="dialog-header"><div><p class="eyebrow"><span></span> Category editor</p><h2 id="category-dialog-title">Add a <em>category</em></h2></div><button class="close-button" id="close-category-dialog" type="button" aria-label="Close dialog">×</button></div>
+        <p class="dialog-intro">Create a category for your cake menu.</p>
+        <label>Category name<input name="category" required maxlength="30" placeholder="e.g. Wedding cakes" /></label>
+        <div class="dialog-actions"><button class="cancel-button" id="cancel-category-dialog" type="button">Cancel</button><button class="primary-button" id="submit-category" type="submit">Add category <span>✦</span></button></div>
+      </form>
+    </dialog>
+    <dialog id="confirm-dialog" class="cake-dialog confirm-dialog">
+      <form id="confirm-form" method="dialog">
+        <div class="dialog-header"><div><p class="eyebrow"><span></span> Please confirm</p><h2 id="confirm-title">Are you sure?</h2></div><button class="close-button" id="close-confirm-dialog" type="button" aria-label="Close dialog">×</button></div>
+        <p class="dialog-intro" id="confirm-message"></p>
+        <div class="dialog-actions"><button class="cancel-button" id="cancel-confirm-dialog" type="button">Cancel</button><button class="primary-button danger-button" id="confirm-submit" type="submit">Delete <span>×</span></button></div>
+      </form>
+    </dialog>
+    <dialog id="story-dialog" class="cake-dialog story-dialog">
+      <form id="story-form" method="dialog">
+        <div class="dialog-header"><div><p class="eyebrow"><span></span> Story editor</p><h2>Edit the <em>story</em></h2></div><button class="close-button" id="close-story-dialog" type="button" aria-label="Close dialog">×</button></div>
+        <p class="dialog-intro">Update the milestones shown in Our Story.</p>
+        <div id="story-fields"></div>
+        <button class="add-milestone-button" id="add-milestone" type="button">+ Add milestone</button>
+        <div class="dialog-actions"><button class="cancel-button" id="cancel-story-dialog" type="button">Cancel</button><button class="primary-button" type="submit">Save story <span>✦</span></button></div>
+      </form>
+    </dialog>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sweet Treat's Reas Cake | Admin</title>
+    <style>
+      :root { --ink: #272323; --muted: #756b6a; --cream: #fff8ef; --coral: #f15d4a; --blue: #b9dcdd; --line: #e8ddd4; --serif: "Fraunces", Georgia, serif; --sans: "DM Sans", sans-serif; }
+      * { box-sizing: border-box; }
+      html, body { width: 100%; min-height: 100%; }
+      iframe { width: 100%; height: 100dvh; }
+      body { margin: 0; overflow-x: hidden; overflow-y: auto; background: var(--cream); color: var(--ink); font-family: var(--sans); }
+      body:not(.is-authenticated) { overflow: hidden; }
+      iframe { display: none; border: 0; }
+      body.is-authenticated { overflow: hidden; }
+      body.is-authenticated iframe { display: block; overflow: auto; }
+      .login-screen { position: fixed; inset: 0; min-height: 100dvh; display: grid; place-items: center; overflow: hidden; padding: clamp(16px, 4vw, 48px); }
+      body.is-authenticated .login-screen { display: none; }
+      .login-panel { width: min(520px, calc(100vw - 32px)); padding: clamp(28px, 5vw, 50px); background: var(--cream); border: 1px solid var(--line); box-shadow: 12px 12px 0 var(--blue); }
+      .brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+      .logo-image { display: block; width: clamp(110px, 24vw, 175px); height: clamp(64px, 11vw, 82px); object-fit: contain; object-position: left center; flex: 0 0 auto; }
+      .brand-name { color: var(--coral); font-size: clamp(14px, 2vw, 17px); font-weight: 700; white-space: nowrap; }
+      .eyebrow { margin: 52px 0 14px; color: var(--coral); text-transform: uppercase; font-size: 10px; letter-spacing: .13em; font-weight: 700; }
+      h1 { margin: 0; font: 800 clamp(42px, 8vw, 66px)/.95 var(--serif); letter-spacing: -.04em; }
+      h1 em { color: var(--coral); font-style: normal; }
+      .intro { color: var(--muted); font-size: 13px; line-height: 1.6; margin: 19px 0 28px; }
+      label { display: block; margin: 17px 0; font-size: 11px; font-weight: 700; }
+      input { display: block; width: 100%; min-height: 46px; margin-top: 7px; padding: 13px; border: 1px solid var(--line); background: white; color: var(--ink); font: 13px var(--sans); outline-color: var(--coral); }
+      .login-button { width: 100%; margin-top: 8px; padding: 14px; border: 0; border-radius: 3px; cursor: pointer; color: white; background: var(--coral); font: 700 13px var(--sans); }
+      .login-button:hover { background: #d94b3b; }
+      .error { min-height: 18px; margin: 12px 0 0; color: var(--coral); font-size: 11px; }
+      .security-note { margin: 27px 0 0; padding-top: 17px; border-top: 1px solid var(--line); color: var(--muted); font-size: 10px; line-height: 1.5; }
+      .logout { display: none; position: fixed; z-index: 2; top: 15px; right: 20px; padding: 9px 13px; border: 1px solid var(--line); border-radius: 3px; color: var(--muted); background: var(--cream); cursor: pointer; font: 700 11px var(--sans); }
+      body.is-authenticated .logout { display: block; }
+      @media (max-width: 520px) { .login-panel { box-shadow: 7px 7px 0 var(--blue); }.brand { gap: 7px; }.brand-name { white-space: normal; line-height: 1.15; }.eyebrow { margin-top: 38px; } }
+      @media (max-width: 360px) { .login-panel { width: calc(100vw - 24px); padding: 24px 20px; }.logo-image { width: 98px; }.brand-name { font-size: 13px; } h1 { font-size: 46px; } }
+      @media (max-height: 780px) { .login-screen { display: flex; align-items: flex-start; justify-content: center; padding: 16px; }.login-panel { max-height: calc(100dvh - 32px); margin: 16px auto; overflow: hidden; } }
+      @media (min-width: 700px) and (max-height: 900px) { .login-panel { padding: 26px 38px; }.logo-image { width: 150px; height: 68px; }.eyebrow { margin-top: 24px; margin-bottom: 10px; }.intro { margin: 12px 0 18px; }.login-panel label { margin: 12px 0; }.login-panel input { min-height: 40px; padding: 10px; }.login-button { padding: 12px; }.security-note { margin-top: 17px; padding-top: 12px; } }
+    </style>
+  </head>
+  <body>
+    <section class="login-screen" aria-labelledby="login-title">
+      <form class="login-panel" id="login-form">
+        <div class="brand"><img class="logo-image" src="../Logo.png" alt="Sweet Treat's Reas Cake" /><span class="brand-name">Sweet Rea's Cake</span></div>
+        <p class="eyebrow">Admin workspace</p>
+        <h1 id="login-title">Welcome<br /><em>back.</em></h1>
+        <p class="intro">Sign in to add, edit, and remove cakes from your menu.</p>
+        <label>Email address<input name="username" type="email" autocomplete="username" required placeholder="you@example.com" /></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Your password" /></label>
+        <button class="login-button" type="submit">Sign in to admin</button>
+        <p class="error" id="login-error" role="alert"></p>
+        <p class="security-note">Sign in with the Admin account created in Supabase. Your menu changes are shared through the database.</p>
+      </form>
+    </section>
+    <button class="logout" id="logout-button" type="button">Log out</button>
+    <iframe src="../index.html?admin=1" title="Sweet Treat's Reas Cake admin workspace"></iframe>
+    <script type="module">
+      import { supabase } from "/supabase-client.js";
+      const loginForm = document.querySelector("#login-form");
+      const loginError = document.querySelector("#login-error");
+      const setAuthenticated = () => document.body.classList.add("is-authenticated");
+      const setLoggedOut = () => { document.body.classList.remove("is-authenticated"); window.scrollTo(0, 0); };
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) setAuthenticated();
+      else setLoggedOut();
+      loginForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const data = new FormData(loginForm);
+        const { error } = await supabase.auth.signInWithPassword({ email: data.get("username"), password: data.get("password") });
+        if (!error) {
+          loginError.textContent = "";
+          setAuthenticated();
+        } else {
+          loginError.textContent = "That email or password is not correct.";
+        }
+      });
+      document.querySelector("#logout-button").addEventListener("click", async () => {
+        await supabase.auth.signOut();
+        setLoggedOut();
+      });
+    </script>
+  </body>
+</html>
