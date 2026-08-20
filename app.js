@@ -33,12 +33,18 @@ const storyFields = document.querySelector("#story-fields");
 const imageUpload = document.querySelector("#photo-upload");
 const imageFileName = document.querySelector("#image-file-name");
 const adminList = document.querySelector("#admin-list");
+const testimonialTrack = document.querySelector("#testimonial-track");
+const testimonialAdminList = document.querySelector("#testimonial-admin-list");
+const testimonialDialog = document.querySelector("#testimonial-dialog");
+const testimonialForm = document.querySelector("#testimonial-form");
 let cakes = [];
 let savedCategories = [];
 let story = [];
+let testimonials = [];
 let selectedFilter = "All";
 let editingId = null;
 let editingCategory = null;
+let editingTestimonialId = null;
 let storyDraft = null;
 let confirmResolution = null;
 
@@ -47,21 +53,24 @@ function imageUrl(cake) { return cake.image_url || ""; }
 function reportError(error) { console.error(error); window.alert(error.message || String(error)); }
 
 async function loadData() {
-  const [cakesResult, categoriesResult, storyResult] = await Promise.all([
+  const [cakesResult, categoriesResult, storyResult, testimonialsResult] = await Promise.all([
     supabase.from("cakes").select("*").order("created_at", { ascending: false }),
     supabase.from("categories").select("name").order("name"),
-    supabase.from("milestones").select("*").order("sort_order")
+    supabase.from("milestones").select("*").order("sort_order"),
+    supabase.from("testimonials").select("*").order("created_at")
   ]);
-  if (cakesResult.error || categoriesResult.error || storyResult.error) {
-    reportError(cakesResult.error || categoriesResult.error || storyResult.error);
+  if (cakesResult.error || categoriesResult.error || storyResult.error || (testimonialsResult && testimonialsResult.error)) {
+    reportError(cakesResult.error || categoriesResult.error || storyResult.error || testimonialsResult.error);
     cakes = defaultCakes;
     savedCategories = ["Classic", "Seasonal", "Celebration"];
     story = defaultStory;
+    testimonials = [];
     return;
   }
   cakes = cakesResult.data?.length ? cakesResult.data : defaultCakes;
   savedCategories = categoriesResult.data?.map((item) => item.name) || [];
   story = storyResult.data?.length ? storyResult.data : defaultStory;
+  testimonials = testimonialsResult.data || [];
 }
 function renderCakes() {
   const categories = [...new Set([...savedCategories, ...cakes.map((cake) => cake.category)].filter(Boolean))].sort();
@@ -77,12 +86,26 @@ function renderCakes() {
 }
 function renderStory() { document.querySelector("#story-timeline").innerHTML = story.map((item, index) => `<article class="story-milestone ${index % 2 ? "milestone-right" : "milestone-left"} ${index === story.length - 1 ? "milestone-final" : ""}"><div class="milestone-icon">${escapeHtml(item.icon)}</div><div><time>${escapeHtml(item.time_label)}</time><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.description)}</p></div></article>`).join(""); }
 function renderStoryFields() { storyFields.innerHTML = storyDraft.map((item, index) => `<fieldset><legend>Milestone ${index + 1}</legend><div class="form-row"><label>Year or label<input name="time-${index}" required value="${escapeHtml(item.time_label)}" /></label><label>Icon<input name="icon-${index}" required maxlength="2" value="${escapeHtml(item.icon)}" /></label></div><label>Title<input name="title-${index}" required value="${escapeHtml(item.title)}" /></label><label>Description<textarea name="description-${index}" required maxlength="150" rows="2">${escapeHtml(item.description)}</textarea></label></fieldset>`).join(""); }
+function renderTestimonials() {
+  if (!testimonials.length) {
+    testimonialTrack.innerHTML = '';
+    testimonialAdminList.innerHTML = '';
+    return;
+  }
+  const cardsHtml = testimonials.map(t => `<div class="testimonial-card"><p>"${escapeHtml(t.content)}"</p><div class="testimonial-author">— ${escapeHtml(t.author_name)}</div></div>`).join("");
+  testimonialTrack.innerHTML = cardsHtml + cardsHtml;
+  testimonialAdminList.innerHTML = testimonials.map(t => `<tr><td><strong>${escapeHtml(t.author_name)}</strong></td><td><small>${escapeHtml(t.content)}</small></td><td class="table-actions"><button class="edit-testimonial" data-id="${escapeHtml(t.id)}" type="button">Edit</button><button class="delete-testimonial" data-id="${escapeHtml(t.id)}" type="button">Delete</button></td></tr>`).join("");
+}
 function showConfirmation(message) { document.querySelector("#confirm-message").textContent = message; confirmDialog.showModal(); return new Promise((resolve) => { confirmResolution = resolve; }); }
 function closeConfirmation(result) { confirmResolution?.(result); confirmResolution = null; confirmDialog.close(); }
 function openDialog(cake = null) { editingId = cake?.id || null; document.querySelector("#dialog-title").innerHTML = editingId ? "Edit a <em>cake</em>" : "Add a <em>new cake</em>"; document.querySelector("#submit-cake").innerHTML = editingId ? "Save changes <span>✦</span>" : "Add to menu <span>✦</span>"; if (cake) { form.elements.name.value = cake.name; form.elements.price.value = cake.price; form.elements.category.value = cake.category; form.elements.description.value = cake.description || ""; } dialog.showModal(); form.elements.name.focus(); }
+function openTestimonialDialog(t = null) { editingTestimonialId = t?.id || null; document.querySelector("#testimonial-dialog-title").innerHTML = editingTestimonialId ? "Edit a <em>testimonial</em>" : "Add a <em>testimonial</em>"; document.querySelector("#submit-testimonial").innerHTML = editingTestimonialId ? "Save changes <span>✦</span>" : "Save testimonial <span>✦</span>"; if (t) { testimonialForm.elements.author_name.value = t.author_name; testimonialForm.elements.content.value = t.content; } else { testimonialForm.reset(); } testimonialDialog.showModal(); testimonialForm.elements.author_name.focus(); }
 function uploadImage(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = async () => { const extension = file.name.split(".").pop().toLowerCase(); const path = `${crypto.randomUUID()}.${extension}`; const { error } = await supabase.storage.from("cake-images").upload(path, file, { contentType: file.type }); if (error) return reject(error); resolve(supabase.storage.from("cake-images").getPublicUrl(path).data.publicUrl); }; reader.onerror = reject; reader.readAsArrayBuffer(file); }); }
 
 document.querySelector("#open-add-admin").addEventListener("click", () => openDialog());
+document.querySelector("#open-add-testimonial").addEventListener("click", () => openTestimonialDialog());
+document.querySelector("#close-testimonial-dialog").addEventListener("click", () => testimonialDialog.close());
+document.querySelector("#cancel-testimonial-dialog").addEventListener("click", () => testimonialDialog.close());
 document.querySelector("#open-story-editor").addEventListener("click", () => { storyDraft = story.map((item) => ({ ...item })); renderStoryFields(); storyDialog.showModal(); });
 document.querySelector("#add-milestone").addEventListener("click", () => { storyDraft.push({ icon: "✦", time_label: "New", title: "A new sweet chapter", description: "Tell your visitors about this moment in the Sweet Rea's Cake story." }); renderStoryFields(); });
 document.querySelector("#close-story-dialog").addEventListener("click", () => { storyDraft = null; storyDialog.close(); });
@@ -100,7 +123,9 @@ document.querySelector("#close-category-dialog").addEventListener("click", () =>
 document.querySelector("#cancel-category-dialog").addEventListener("click", () => categoryDialog.close());
 categoryForm.addEventListener("submit", async (event) => { event.preventDefault(); const newCategory = categoryForm.elements.category.value.trim(); if (!newCategory) return; const result = editingCategory ? await supabase.from("categories").update({ name: newCategory }).eq("name", editingCategory) : await supabase.from("categories").insert({ name: newCategory }); if (result.error) return reportError(result.error); savedCategories = [...new Set([...savedCategories.filter((item) => item !== editingCategory), newCategory])]; categoryDialog.close(); renderCakes(); });
 adminList.addEventListener("click", async (event) => { const button = event.target.closest("button"); if (!button) return; const cake = cakes.find((item) => item.id === button.dataset.id); if (!cake) return; if (button.classList.contains("edit-cake")) return openDialog(cake); if (button.classList.contains("delete-cake") && await showConfirmation(`Delete ${cake.name} from the menu?`)) { const { error } = await supabase.from("cakes").delete().eq("id", cake.id); if (error) return reportError(error); cakes = cakes.filter((item) => item.id !== cake.id); renderCakes(); } });
+testimonialAdminList.addEventListener("click", async (event) => { const button = event.target.closest("button"); if (!button) return; const t = testimonials.find((item) => item.id === button.dataset.id); if (!t) return; if (button.classList.contains("edit-testimonial")) return openTestimonialDialog(t); if (button.classList.contains("delete-testimonial") && await showConfirmation(`Delete testimonial from ${t.author_name}?`)) { const { error } = await supabase.from("testimonials").delete().eq("id", t.id); if (error) return reportError(error); testimonials = testimonials.filter((item) => item.id !== t.id); renderTestimonials(); } });
 form.addEventListener("submit", async (event) => { event.preventDefault(); const data = new FormData(form); try { const existing = cakes.find((cake) => cake.id === editingId); const image_url = data.get("image")?.size ? await uploadImage(data.get("image")) : existing?.image_url || ""; const cakeData = { name: data.get("name"), price: Number(data.get("price")), category: data.get("category"), description: data.get("description") || "", image_url }; const result = editingId ? await supabase.from("cakes").update(cakeData).eq("id", editingId).select().single() : await supabase.from("cakes").insert(cakeData).select().single(); if (result.error) throw result.error; cakes = editingId ? cakes.map((cake) => cake.id === editingId ? result.data : cake) : [result.data, ...cakes]; form.reset(); editingId = null; dialog.close(); renderCakes(); } catch (error) { reportError(error); } });
+testimonialForm.addEventListener("submit", async (event) => { event.preventDefault(); const data = new FormData(testimonialForm); try { const tData = { author_name: data.get("author_name"), content: data.get("content") }; const result = editingTestimonialId ? await supabase.from("testimonials").update(tData).eq("id", editingTestimonialId).select().single() : await supabase.from("testimonials").insert(tData).select().single(); if (result.error) throw result.error; testimonials = editingTestimonialId ? testimonials.map((t) => t.id === editingTestimonialId ? result.data : t) : [...testimonials, result.data]; testimonialDialog.close(); renderTestimonials(); } catch (error) { reportError(error); } });
 
-async function start() { await loadData(); renderCakes(); renderStory(); if (isAdminView) document.querySelector("#admin").scrollIntoView(); }
+async function start() { await loadData(); renderCakes(); renderStory(); renderTestimonials(); if (isAdminView) document.querySelector("#admin").scrollIntoView(); }
 start();

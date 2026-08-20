@@ -24,9 +24,17 @@ create table if not exists milestones (
   created_at timestamptz default now()
 );
 
+create table if not exists testimonials (
+  id uuid primary key default gen_random_uuid(),
+  author_name text not null,
+  content text not null,
+  created_at timestamptz default now()
+);
+
 alter table cakes enable row level security;
 alter table categories enable row level security;
 alter table milestones enable row level security;
+alter table testimonials enable row level security;
 
 drop policy if exists "Public can view cakes" on cakes;
 drop policy if exists "Admins can manage cakes" on cakes;
@@ -34,6 +42,8 @@ drop policy if exists "Public can view categories" on categories;
 drop policy if exists "Admins can manage categories" on categories;
 drop policy if exists "Public can view milestones" on milestones;
 drop policy if exists "Admins can manage milestones" on milestones;
+drop policy if exists "Public can view testimonials" on testimonials;
+drop policy if exists "Admins can manage testimonials" on testimonials;
 
 create policy "Public can view cakes" on cakes for select to anon, authenticated using (true);
 create policy "Admins can manage cakes" on cakes for all to authenticated using (true) with check (true);
@@ -41,6 +51,8 @@ create policy "Public can view categories" on categories for select to anon, aut
 create policy "Admins can manage categories" on categories for all to authenticated using (true) with check (true);
 create policy "Public can view milestones" on milestones for select to anon, authenticated using (true);
 create policy "Admins can manage milestones" on milestones for all to authenticated using (true) with check (true);
+create policy "Public can view testimonials" on testimonials for select to anon, authenticated using (true);
+create policy "Admins can manage testimonials" on testimonials for all to authenticated using (true) with check (true);
 
 insert into categories (name) values ('Classic'), ('Seasonal'), ('Celebration') on conflict (name) do nothing;
 insert into cakes (name, price, category, description, image_url)
@@ -61,6 +73,14 @@ select * from (values
   ('✦', 'And then...', 'Happily ever after', 'There is always room for one more slice.', 3)
 ) as defaults(icon, time_label, title, description, sort_order)
 where not exists (select 1 from milestones);
+
+insert into testimonials (author_name, content)
+select * from (values
+  ('Sarah M.', 'The most beautiful and delicious cake for our daughter''s 1st birthday!'),
+  ('James & Lily', 'Everyone asked where the cake was from. Absolutely stunning.'),
+  ('Chloe T.', 'Not too sweet, just perfect. The sponge was incredibly soft.')
+) as defaults(author_name, content)
+where not exists (select 1 from testimonials);
 
 drop policy if exists "Public can view cake images" on storage.objects;
 drop policy if exists "Admins can upload cake images" on storage.objects;
